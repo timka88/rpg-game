@@ -86,7 +86,7 @@ class Spear(Weapon):
         super().__init__(amount_of_damage, wear_lvl, wear_lvl_max)
 
     def attack(self, target: Character):
-        '''колет цель копьём, тратит 7 ед. прочности, наносит и возвращает урон'''
+        '''колет цель копьём, тратит 7 ед. прочности, наносит'''
         self.lose_wear_lvl(min(7, self.wear_lvl))
         print('Выпад копьём!')
         target.take_damage(self.amount_of_damage)
@@ -99,7 +99,7 @@ class Bow(Weapon):
         self.arrows = arrows
 
     def attack(self, target: Character):
-        '''стреляет в цель из лука: тратит одну стрелу и 3 ед. прочности, наносит и возвращает урон'''
+        '''стреляет в цель из лука: тратит одну стрелу и 3 ед. прочности, наносит'''
         if self.arrows <= 0:
             raise TargetError
         self.arrows -= 1
