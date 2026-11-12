@@ -91,7 +91,7 @@ class Bow(Weapon):
         self.arrows = arrows
 
     def attack(self, target: Character):
-        '''стреляет в цель из лука: тратит одну стрелу и 3 ед. прочности, наносит'''
+        '''стреляет в цель из лука: тратит одну стрелу и 3 ед. прочности, наносит урон'''
         if self.arrows <= 0:
             raise TargetError
         self.arrows -= 1
