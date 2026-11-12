@@ -132,7 +132,7 @@ class Armour(BreakableItem, ABC):
         cur_lvl = self.wear_lvl
         try:
             super().lose_wear_lvl(self, amount)
-        except NegativeValueError:
+        except NegativeWearLevelError:
             return abs(cur_lvl - amount)
         
 
