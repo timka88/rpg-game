@@ -1,0 +1,6 @@
+import kagglehub
+
+# Download latest version
+path = kagglehub.competition_download('ai-team-msk-meteorites')
+
+print("Path to competition files:", path)
