@@ -2,6 +2,7 @@
 from __future__ import annotations
 from abc import (ABC, abstractmethod)
 from core.exceptions import (LoseException, TargetError)
+from mechanics.inventory import Storage
 
 DAMAGE = 0
 

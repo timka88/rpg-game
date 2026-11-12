@@ -1,12 +1,16 @@
 # TODO : переопределить str
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from core.exceptions import NegativeValueError, TargetError
+from core.exceptions import NegativeValueError, NegativeWearLevelError, TargetError
 from entities.characters import Character
 
 
-class Item(ABC):
+class Item(ABC): 
     '''базовый класс для всех предметов'''
+    def __new__(cls, *args, **kwargs):
+        if cls is Item:
+            raise TypeError("Нельзя создавать экземпляры базового класса Item")   
+        return super().__new__(cls)
 
 class BreakableItem(Item, ABC):
     '''базовый класс для предметов, которые могут изнашиваться'''
@@ -15,6 +19,12 @@ class BreakableItem(Item, ABC):
         self._wear_lvl = wear_lvl
         self.__wear_lvl_max = wear_lvl_max
         self.__is_broken = False
+
+    def __new__(cls, *args, **kwargs):
+        if cls is BreakableItem:
+            raise TypeError("Нельзя создавать экземпляры абстрактного класса BreakableItem")   
+        return super().__new__(cls)
+
 
     @property
     def is_broken(self) -> bool:
@@ -36,7 +46,7 @@ class BreakableItem(Item, ABC):
         
         new_wear_lvl = self._wear_lvl - amount
         if new_wear_lvl < 0:
-            raise NegativeValueError
+            raise NegativeWearLevelError
  
         self._wear_lvl = new_wear_lvl
         if new_wear_lvl == 0:
@@ -44,16 +54,24 @@ class BreakableItem(Item, ABC):
 
 
 class UnbreakableItem(Item, ABC):
-    '''базовый класс для предметов, которые не имеют износа'''
-    pass
+    '''абстркатный класс для предметов, которые не имеют износа'''
+    def __new__(cls, *args, **kwargs):
+        if cls is UnbreakableItem:
+            raise TypeError("Нельзя создавать экземпляры абстрактного класса UnbreakableItem")   
+        return super().__new__(cls)
 
 class Weapon(BreakableItem, ABC):
-    '''базовый класс для всех типов оружия'''
-
+    '''абстрактный класс для всех типов оружия'''
+    
     def __init__(self, amount_of_damage: float, wear_lvl: float, wear_lvl_max: float):
         super().__init__(wear_lvl, wear_lvl_max)
         self.amount_of_damage = amount_of_damage
 
+    def __new__(cls, *args, **kwargs):
+        if cls is Weapon:
+            raise TypeError("Нельзя создавать экземпляры абстрактного класса Weapon")   
+        return super().__new__(cls)
+    
     @abstractmethod
     def attack(self, target: Character):
         '''атакует цель, наносит ей урон и возвращает его'''
@@ -98,6 +116,27 @@ class Bow(Weapon):
         self.lose_wear_lvl(min(3, self.wear_lvl))
         print('Выстрел из лука!')
         target.take_damage(self.amount_of_damage)
+
+class Armour(BreakableItem, ABC):
+
+    def __init__(self, wear_lvl, wear_lvl_max):
+        super().__init__(wear_lvl, wear_lvl_max)
+    
+    def get_amount_of_protect(self):
+        if self.wear_lvl >= 0:
+            return self.wear_lvl
+        else:
+            raise NegativeValueError
+    
+    def lose_wear_lvl(self, amount):
+        cur_lvl = self.wear_lvl
+        try:
+            super().lose_wear_lvl(self, amount)
+        except NegativeValueError:
+            return abs(cur_lvl - amount)
+        
+
+    
 
 
 class Amulet(UnbreakableItem):

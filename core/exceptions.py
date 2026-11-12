@@ -25,6 +25,13 @@ class NegativeValueError(ScriptException):
         """Выводит сообщение об отрицательном значении"""
         print('Значение не может быть отрицательным')
 
+class NegativeWearLevelError(ScriptException):
+    """Передано отрицательное значение там, где допустимо только >= 0"""
+
+    def show_message(self):
+        """Выводит сообщение об отрицательном значении"""
+        print('Значение не может быть отрицательным')
+
 class GameOverException(GameException, ABC):
     """Базовое исключение окончания игры (победа, поражение, таймаут)"""
 
