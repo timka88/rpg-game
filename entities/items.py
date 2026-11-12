@@ -2,6 +2,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from core.exceptions import NegativeValueError, TargetError
+from entities.characters import Character
 
 
 class Item(ABC):
