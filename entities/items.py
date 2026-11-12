@@ -17,36 +17,28 @@ class BreakableItem(Item, ABC):
         self.__is_broken = False
 
     @property
-    def is_broken(self):
+    def is_broken(self) -> bool:
         return self.__is_broken
-
+ 
     @property
-    def wear_lvl(self):
+    def wear_lvl(self) -> float:
         return self._wear_lvl
-
+ 
     @property
-    def wear_lvl_max(self):
+    def wear_lvl_max(self) -> float:
         return self.__wear_lvl_max
-
-    def show_wear_lvl(self):
-        if not self.is_broken:
-            print(self.wear_lvl)
-
-    def show_wear_lvl_max(self):
-        if not self.is_broken:
-            print(self.wear_lvl_max)
-
+ 
     def lose_wear_lvl(self, amount: float):
         if self.is_broken:
             raise TargetError
-
+        if amount < 0:
+            raise NegativeValueError
+        
         new_wear_lvl = self._wear_lvl - amount
-
         if new_wear_lvl < 0:
             raise NegativeValueError
-
+ 
         self._wear_lvl = new_wear_lvl
-        
         if new_wear_lvl == 0:
             self.__is_broken = True
 
