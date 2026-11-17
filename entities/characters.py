@@ -1,7 +1,7 @@
 # НЕ ЗАБЫТЬ : можно реализовать механику шанса попадания, которая зависит от ловкости цели и точности атакующего
 from __future__ import annotations
 from abc import (ABC, abstractmethod)
-from core.exceptions import (LoseException, TargetError)
+from core.exceptions import (LoseException, TargetError, NegativeValueError)
 from mechanics.inventory import Storage
 
 DAMAGE = 0
@@ -17,11 +17,15 @@ class Character(ABC):
 
     def take_damage(self, amount_of_damage: float):
         """Уменьшает здоровье на amount_of_damage"""
+        if amount_of_damage < 0:
+            raise NegativeValueError
         self._hp -= amount_of_damage
 
     def heal(self, amount: float):
         """Восстанавливает здоровье на amount, но не выше hp_max"""
-        self._hp += amount if self._hp + amount <= self._hp_max else self._hp_max - self._hp
+        if amount < 0:
+            raise NegativeValueError
+        self._hp = min(self._hp + amount, self._hp_max)
 
     @abstractmethod
     def attack(self, target: Character):
@@ -115,10 +119,6 @@ class Archer(Hero):
 class Goblin(Monster):
     """Гоблин — слабый монстр, может лечиться, пока жив"""
 
-    def heal(self, amount: float):
-        """Лечится на amount (не выше hp_max), только если жив"""
-        if self._is_active:
-            self._hp = min(self._hp + amount, self._hp_max)
     def attack(self, target: Character):
         """Атакует цель; мёртвый гоблин атаковать не может (TargetError)"""
         if self._is_active:
@@ -137,6 +137,8 @@ class Skeleton(Monster):
 
     def heal(self, amount: float):
         """Ничего не делает: скелет не лечится"""
+        if amount < 0:
+            raise NegativeValueError
         print("скелет не получил никакой пользы с этого (((")
 
     def attack(self, target: Character):
