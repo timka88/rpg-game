@@ -123,20 +123,17 @@ class Armour(BreakableItem, ABC):
         super().__init__(wear_lvl, wear_lvl_max)
     
     def get_amount_of_protect(self):
-        if self.wear_lvl >= 0:
-            return self.wear_lvl
-        else:
-            raise NegativeValueError
-    
-    def lose_wear_lvl(self, amount):
-        cur_lvl = self.wear_lvl
-        try:
-            super().lose_wear_lvl(self, amount)
-        except NegativeWearLevelError:
-            return abs(cur_lvl - amount)
-        
+        '''возвращает, сколько урона броня может поглотить прямо сейчас'''
+        return self.wear_lvl
 
-    
+    def defend(self, damage: float):
+        '''поглощает урон и возвращает часть, прошедшую сквозь броню'''
+        if self.is_broken:
+            return damage
+
+        absorbed = min(self.wear_lvl, damage)
+        self.lose_wear_lvl(absorbed)
+        return damage - absorbed
 
 
 class Amulet(UnbreakableItem):
