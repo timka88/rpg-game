@@ -1,7 +1,7 @@
 # НЕ ЗАБЫТЬ : можно реализовать механику шанса попадания, которая зависит от ловкости цели и точности атакующего
 from __future__ import annotations
 from abc import (ABC, abstractmethod)
-from core.exceptions import (LoseException, TargetError, NegativeValueError)
+from core.exceptions import (LoseException, TargetError, NegativeValueError, OverflowLimitError)
 from mechanics.inventory import Storage
 
 DAMAGE = 0
@@ -11,6 +11,12 @@ class Character(ABC):
 
     def __init__(self, hp: float, hp_max: float, mana: float):
         """Создаёт персонажа с текущим и максимальным здоровьем и запасом маны"""
+
+        if hp <= 0 or hp_max <= 0 or mana < 0:
+            raise NegativeValueError
+        if hp > hp_max:
+            raise OverflowLimitError
+
         self._hp = hp
         self._hp_max = hp_max
         self._mana = mana
