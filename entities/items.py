@@ -2,7 +2,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from core.exceptions import NegativeValueError, NegativeWearLevelError, TargetError
-from entities.characters import Character
 
 
 class Item(ABC): 
@@ -121,7 +120,7 @@ class Armour(BreakableItem, ABC):
 
     def __init__(self, wear_lvl, wear_lvl_max):
         super().__init__(wear_lvl, wear_lvl_max)
-    
+
     def get_amount_of_protect(self):
         '''возвращает, сколько урона броня может поглотить прямо сейчас'''
         return self.wear_lvl
@@ -141,3 +140,4 @@ class Amulet(UnbreakableItem):
 
     def __init__(self, hp_bonus: float = 20):
         self.hp_bonus = hp_bonus
+

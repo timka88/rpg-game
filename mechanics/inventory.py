@@ -14,7 +14,11 @@ class Storage[T]():
             self._list_items.append(item)
         else:
             raise InventoryFullError
-               
+
+    def has_item(self, item: T):
+        """Возвращает True, если item лежит в хранилище, иначе False"""
+        return True if item in self._list_items else False
+
     def show_max_size(self):
         """Выводит максимальную вместимость хранилища"""
         print(self._max_size)

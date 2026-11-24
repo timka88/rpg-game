@@ -1,8 +1,9 @@
 # НЕ ЗАБЫТЬ : можно реализовать механику шанса попадания, которая зависит от ловкости цели и точности атакующего
 from __future__ import annotations
 from abc import (ABC, abstractmethod)
-from core.exceptions import (LoseException, TargetError, NegativeValueError, OverflowLimitError)
+from core.exceptions import (LoseException, TargetError, NegativeValueError, OverflowLimitError, ChoiceError)
 from mechanics.inventory import Storage
+from entities.items import Armour
 
 DAMAGE = 0
 
@@ -47,8 +48,33 @@ class Character(ABC):
 class Hero(Character, ABC):
     """Персонаж игрока. Его смерть означает поражение"""
 
+    def __init__(self, hp: float, hp_max: float, mana: float):
+        """Создаёт героя с пустым инвентарём и без выбранной брони"""
+        super().__init__(hp, hp_max, mana)
+        self.inventory = Storage()
+        self.armour = None
+
+    def choose_armour(self, armour: Armour):
+        '''Выбирает броню из инвентаря'''
+        if not isinstance(armour, Armour) or not self.inventory.has_item(armour):
+            raise ChoiceError
+        self.armour = armour
+
+    def _active_armour(self):
+        """Выбранная броня, если она в инвентаре и цела, иначе лучшая"""
+        if self.inventory.has_item(self.armour) and not self.armour.is_broken:
+            return self.armour
+        return None
+
     def take_damage(self, amount_of_damage: float):
-        """Получает урон; если здоровье кончилось, выбрасывает LoseException"""
+        """Получает урон (в том числе и через броню), если здоровье кончилось, выбрасывает LoseException"""
+        if amount_of_damage < 0:
+            raise NegativeValueError
+
+        armour = self._active_armour()
+        if armour is not None:
+            amount_of_damage = armour.defend(amount_of_damage)
+
         super().take_damage(amount_of_damage)
         if self._hp <= 0:
             raise LoseException
