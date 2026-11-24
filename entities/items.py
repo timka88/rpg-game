@@ -141,3 +141,15 @@ class Amulet(UnbreakableItem):
     def __init__(self, hp_bonus: float = 20):
         self.hp_bonus = hp_bonus
 
+class DiamondArmour(Armour):
+    def __init__(self, wear_lvl = 50, wear_lvl_max = 50):
+        super().__init__(wear_lvl, wear_lvl_max)
+
+class IronArmour(Armour):
+    def __init__(self, wear_lvl = 30, wear_lvl_max = 30):
+        super().__init__(wear_lvl, wear_lvl_max)
+    
+class WoodenArmour(Armour):
+    def __init__(self, wear_lvl = 10, wear_lvl_max = 10):
+        super().__init__(wear_lvl, wear_lvl_max)
+
